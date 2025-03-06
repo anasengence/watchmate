@@ -23,13 +23,13 @@ class WatchListView(APIView):
 class WatchListDetailView(APIView):
     def get(self, request, pk):
         try:
-            list = WatchList.objects.get(pk=pk)
+            obj = WatchList.objects.get(pk=pk)
         except WatchList.DoesNotExist:
             return Response(
                 {"error": "The WatchList does not exist"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        serializer = WatchListSerializer(list)
+        serializer = WatchListSerializer(obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
@@ -57,8 +57,8 @@ class WatchListDetailView(APIView):
 
 class StreamPlatformListView(APIView):
     def get(self, request):
-        StreamPlatforms = StreamPlatform.objects.all()
-        serializer = StreamPlatformSerializer(StreamPlatforms, many=True)
+        platforms = StreamPlatform.objects.all()
+        serializer = StreamPlatformSerializer(platforms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
