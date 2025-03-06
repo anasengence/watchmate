@@ -3,11 +3,15 @@ from ..models import Movie
 
 
 class MovieSerializer(serializers.ModelSerializer):
+    name_length = serializers.SerializerMethodField()
     class Meta:
         model = Movie
         fields = "__all__"
         # exclude = ["active"]
 
+    def get_name_length(self, obj): #object is reserved keyword use obj
+        return len(obj.name)
+    
     def validate(self, attrs):
         if attrs["name"] == attrs["description"]:
             raise serializers.ValidationError(
