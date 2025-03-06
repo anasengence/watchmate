@@ -4,6 +4,7 @@ from django.db import models
 class WatchList(models.Model):
     titile = models.CharField(max_length=100)
     description = models.TextField()
+    platform  = models.ForeignKey("StreamPlatform", on_delete=models.CASCADE, related_name="watchlist")
     active = models.BooleanField(default=True)
     
     def __str__(self):
