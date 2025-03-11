@@ -76,22 +76,26 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
 #         return self.create(request, *args, **kwargs)
 
 
-class WatchListView(APIView):
+class WatchListView(generics.ListCreateAPIView):
+    queryset = WatchList.objects.all()
+    serializer_class = WatchListSerializer
     permission_classes = [AdminOrReadOnly]
 
+# class WatchListView(APIView):
+#     permission_classes = [AdminOrReadOnly]
 
-    def get(self, request):
-        lists = WatchList.objects.all()
-        serializer = WatchListSerializer(lists, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request):
-        serializer = WatchListSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def get(self, request):
+#         lists = WatchList.objects.all()
+#         serializer = WatchListSerializer(lists, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
+#     def post(self, request):
+#         serializer = WatchListSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class WatchListDetailView(APIView):
     permission_classes = [AdminOrReadOnly]
