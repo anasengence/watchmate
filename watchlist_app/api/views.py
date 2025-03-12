@@ -1,6 +1,7 @@
 from ..models import StreamPlatform, WatchList, Review
 from .permissions import IsAdminOrReadOnly, IsReviewUserOrReadOnly
 from .serializers import ReviewSerializer, StreamPlatformSerializer, WatchListSerializer
+from .throttles import ReviewListThrottle, ReviewCreateThrottle
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -8,12 +9,15 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
 from rest_framework.authentication import BasicAuthentication
+
 
 
 class ReviewCreateView(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [ReviewCreateThrottle]
 
     def get_queryset(self):
         return Review.objects.all()
@@ -46,6 +50,7 @@ class ReviewCreateView(generics.CreateAPIView):
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewSerializer
     # permission_classes = [IsAuthenticated]
+    throttle_classes = [ReviewListThrottle]
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -81,6 +86,7 @@ class WatchListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
     queryset = WatchList.objects.all()
     serializer_class = WatchListSerializer
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
 
 # class WatchListView(APIView):
@@ -139,6 +145,8 @@ class WatchListDetailView(APIView):
 
 class StreamPlatformListView(APIView):
     permission_classes = [IsAdminOrReadOnly]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "stream"
 
     def get(self, request):
         platforms = StreamPlatform.objects.all()
