@@ -17,17 +17,17 @@ class RegisterView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        # Token.objects.create(user=user)
+        Token.objects.create(user=user)
 
     def post(self, request):
         response = self.create(request)
-        # token = Token.objects.get(user=response.data["id"])
-        # response.data["token"] = token.key
-        refresh = RefreshToken.for_user(response.data["id"])
-        response.data["token"] = {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-        }
+        token = Token.objects.get(user=response.data["id"])
+        response.data["token"] = token.key
+        # refresh = RefreshToken.for_user(request.user)
+        # response.data["token"] = {
+        #     "refresh": str(refresh),
+        #     "access": str(refresh.access_token),
+        # }
         return response
 
 
