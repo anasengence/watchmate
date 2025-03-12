@@ -9,9 +9,22 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
+from rest_framework.throttling import (
+    UserRateThrottle,
+    AnonRateThrottle,
+    ScopedRateThrottle,
+)
 from rest_framework.authentication import BasicAuthentication
 
+
+class UsernameReviewListView(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+    # permission_classes = [IsAuthenticated]
+    # throttle_classes = [ReviewListThrottle]
+
+    def get_queryset(self):
+        username = self.request.query_params.get("username")
+        return Review.objects.filter(review_user__username=username)
 
 
 class ReviewCreateView(generics.CreateAPIView):
