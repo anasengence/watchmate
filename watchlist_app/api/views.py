@@ -15,6 +15,8 @@ from rest_framework.throttling import (
     ScopedRateThrottle,
 )
 from rest_framework.authentication import BasicAuthentication
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 class UsernameReviewListView(generics.ListAPIView):
@@ -99,7 +101,15 @@ class WatchListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
     queryset = WatchList.objects.all()
     serializer_class = WatchListSerializer
-    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    # throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    filter_backends = [
+        filters.SearchFilter,
+        DjangoFilterBackend,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = ["avg_rating"]
+    filterset_fields = ["titile", "platform__name"]
+    search_fields = ["titile", "platform__name"]
 
 
 # class WatchListView(APIView):
