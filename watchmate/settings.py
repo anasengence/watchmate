@@ -143,4 +143,5 @@ REST_FRAMEWORK = {
         "review-list": "3/day",
         "stream": "2/day",
     },
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
 }
