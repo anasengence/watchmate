@@ -2,6 +2,7 @@ from ..models import StreamPlatform, WatchList, Review
 from .permissions import IsAdminOrReadOnly, IsReviewUserOrReadOnly
 from .serializers import ReviewSerializer, StreamPlatformSerializer, WatchListSerializer
 from .throttles import ReviewListThrottle, ReviewCreateThrottle
+from .pagination import WatchListPagination
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -32,7 +33,7 @@ class UsernameReviewListView(generics.ListAPIView):
 class ReviewCreateView(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
-    throttle_classes = [ReviewCreateThrottle]
+    # throttle_classes = [ReviewCreateThrottle]
 
     def get_queryset(self):
         return Review.objects.all()
@@ -65,7 +66,7 @@ class ReviewCreateView(generics.CreateAPIView):
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewSerializer
     # permission_classes = [IsAuthenticated]
-    throttle_classes = [ReviewListThrottle]
+    # throttle_classes = [ReviewListThrottle]
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -101,6 +102,7 @@ class WatchListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
     queryset = WatchList.objects.all()
     serializer_class = WatchListSerializer
+    pagination_class = WatchListPagination
     # throttle_classes = [UserRateThrottle, AnonRateThrottle]
     filter_backends = [
         filters.SearchFilter,
@@ -168,7 +170,7 @@ class WatchListDetailView(APIView):
 
 class StreamPlatformListView(APIView):
     permission_classes = [IsAdminOrReadOnly]
-    throttle_classes = [ScopedRateThrottle]
+    # throttle_classes = [ScopedRateThrottle]
     throttle_scope = "stream"
 
     def get(self, request):
